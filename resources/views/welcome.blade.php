@@ -243,6 +243,26 @@
             border-radius: 50%;
         }
         
+        .template-5 .template-preview div {
+            height: 100%;
+            clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+        }
+        
+        .template-6 .template-preview div {
+            height: 100%;
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+        
+        .template-7 .template-preview div {
+            height: 100%;
+            clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
+        }
+        
+        .template-8 .template-preview div {
+            height: 100%;
+            border-radius: 0 15px 0 15px;
+        }
+        
         .template-name {
             font-size: 0.8rem;
             color: #666;
@@ -276,6 +296,7 @@
         .strip-template-1 {
             background: linear-gradient(135deg, #fff5f5, #ffffff);
             border: 3px solid #e75480;
+            flex-direction: row;
         }
         
         .strip-template-1 .photo-frame {
@@ -286,6 +307,7 @@
         .strip-template-2 {
             background: linear-gradient(135deg, #f8e1e7, #fadadd);
             border: 2px dashed #e75480;
+            flex-direction: row;
         }
         
         .strip-template-2 .photo-frame {
@@ -296,6 +318,7 @@
         .strip-template-3 {
             background: #fff;
             border: 1px solid #e75480;
+            flex-direction: column;
         }
         
         .strip-template-3 .photo-frame {
@@ -306,12 +329,84 @@
         .strip-template-4 {
             background: #f9f9f9;
             border: 2px solid #e75480;
+            flex-direction: column;
         }
         
         .strip-template-4 .photo-frame {
             border-radius: 10px;
             overflow: hidden;
             border: 5px double #e75480;
+        }
+        
+        .strip-template-5 {
+            background: linear-gradient(to right, #ffcdd2, #f8bbd0, #e1bee7);
+            padding: 20px;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .strip-template-5 .photo-frame {
+            border: 8px solid white;
+            transform: rotate(5deg);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .strip-template-5 .photo-frame:nth-child(even) {
+            transform: rotate(-5deg);
+        }
+        
+        .strip-template-6 {
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="5" fill="%23ffb6c1" opacity="0.3"/></svg>');
+            background-color: white;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px;
+        }
+        
+        .strip-template-6 .photo-frame {
+            border: 10px solid white;
+            box-shadow: 0 0 0 1px #e75480, 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+        
+        .strip-template-7 {
+            background: black;
+            padding: 20px;
+            flex-direction: row;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .strip-template-7 .photo-frame {
+            border: 10px solid white;
+            transform: rotate(-3deg);
+            margin: 0 10px;
+        }
+        
+        .strip-template-7 .photo-frame:nth-child(even) {
+            transform: rotate(3deg);
+        }
+        
+        .strip-template-8 {
+            background: linear-gradient(45deg, #fce4ec, #f8bbd0);
+            padding: 15px;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-radius: 20px;
+        }
+        
+        .strip-template-8 .photo-frame {
+            border: 8px solid white;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(231, 84, 128, 0.3);
+        }
+        
+        .strip-template-8 .photo-frame img {
+            border-radius: 50%;
         }
         
         .photo-frame {
@@ -462,7 +557,7 @@
             }
             
             .photo-strip {
-                flex-direction: column;
+                flex-direction: column !important;
             }
             
             .photo-frame img {
@@ -528,6 +623,30 @@
                         <div></div>
                     </div>
                     <span class="template-name">Fun</span>
+                </div>
+                <div class="template-option template-5" data-template="5">
+                    <div class="template-preview">
+                        <div></div>
+                    </div>
+                    <span class="template-name">Polaroid</span>
+                </div>
+                <div class="template-option template-6" data-template="6">
+                    <div class="template-preview">
+                        <div></div>
+                    </div>
+                    <span class="template-name">Elegant</span>
+                </div>
+                <div class="template-option template-7" data-template="7">
+                    <div class="template-preview">
+                        <div></div>
+                    </div>
+                    <span class="template-name">Dark</span>
+                </div>
+                <div class="template-option template-8" data-template="8">
+                    <div class="template-preview">
+                        <div></div>
+                    </div>
+                    <span class="template-name">Bubbles</span>
                 </div>
             </div>
             
@@ -691,57 +810,304 @@
             };
         }
         
-        // Download photos
+        // Download photos as a composite strip
         downloadBtn.addEventListener('click', function() {
-            photoDataUrls.forEach((dataUrl, index) => {
-                const link = document.createElement('a');
-                link.download = `floral-photo-${index + 1}.png`;
-                link.href = dataUrl;
-                link.click();
-            });
+            // Create a new canvas for the composite image
+            const stripCanvas = document.createElement('canvas');
+            const ctx = stripCanvas.getContext('2d');
+            
+            // Set dimensions based on template layout
+            let isHorizontal = [1, 2, 5, 7, 8].includes(selectedTemplate);
+            
+            // Calculate size based on the number of photos and orientation
+            const photoWidth = 400;
+            const photoHeight = 300;
+            const padding = 20;
+            
+            if (isHorizontal) {
+                stripCanvas.width = (photoWidth + padding) * selectedStrips - padding;
+                stripCanvas.height = photoHeight;
+            } else {
+                stripCanvas.width = photoWidth;
+                stripCanvas.height = (photoHeight + padding) * selectedStrips - padding;
+            }
+            
+            // Set background color for the strip
+            let bgColor = '#fff5f5';
+            switch(selectedTemplate) {
+                case 2: bgColor = '#f8e1e7'; break;
+                case 3: bgColor = '#ffffff'; break;
+                case 4: bgColor = '#f9f9f9'; break;
+                case 5: bgColor = '#ffcdd2'; break;
+                case 6: bgColor = '#ffffff'; break;
+                case 7: bgColor = '#000000'; break;
+                case 8: bgColor = '#fce4ec'; break;
+            }
+            
+            // Fill background
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
+            
+            // Apply border based on the template
+            const borderWidth = 10;
+            if (selectedTemplate === 1 || selectedTemplate === 3) {
+                ctx.strokeStyle = '#e75480';
+                ctx.lineWidth = borderWidth;
+                ctx.strokeRect(borderWidth/2, borderWidth/2, 
+                            stripCanvas.width - borderWidth, 
+                            stripCanvas.height - borderWidth);
+            } else if (selectedTemplate === 2) {
+                // Dashed border for template 2
+                ctx.strokeStyle = '#e75480';
+                ctx.lineWidth = 5;
+                ctx.setLineDash([10, 5]);
+                ctx.strokeRect(borderWidth/2, borderWidth/2, 
+                            stripCanvas.width - borderWidth, 
+                            stripCanvas.height - borderWidth);
+                ctx.setLineDash([]);
+            }
+            
+            // Load all images and draw them on the canvas
+            let imagesLoaded = 0;
+            const tempImages = [];
+            
+            for (let i = 0; i < photoDataUrls.length; i++) {
+                const img = new Image();
+                img.onload = function() {
+                    tempImages[i] = img;
+                    imagesLoaded++;
+                    
+                    if (imagesLoaded === photoDataUrls.length) {
+                        // All images loaded, draw them to canvas
+                        for (let j = 0; j < tempImages.length; j++) {
+                            // Calculate position based on layout
+                            let x = isHorizontal ? j * (photoWidth + padding) : 0;
+                            let y = isHorizontal ? 0 : j * (photoHeight + padding);
+                            
+                            // Apply special effects based on template
+                            switch(selectedTemplate) {
+                                case 1: // Classic
+                                    ctx.drawImage(tempImages[j], x + 10, y + 10, photoWidth - 20, photoHeight - 20);
+                                    break;
+                                case 2: // Vintage
+                                    ctx.drawImage(tempImages[j], x + 15, y + 15, photoWidth - 30, photoHeight - 30);
+                                    break;
+                                case 3: // Modern
+                                    ctx.save();
+                                    ctx.beginPath();
+                                    ctx.moveTo(x + 10, y + 10);
+                                    ctx.lineTo(x + photoWidth - 10, y + 10);
+                                    ctx.lineTo(x + photoWidth - 30, y + photoHeight - 10);
+                                    ctx.lineTo(x + 30, y + photoHeight - 10);
+                                    ctx.closePath();
+                                    ctx.clip();
+                                    ctx.drawImage(tempImages[j], x + 5, y + 5, photoWidth - 10, photoHeight - 10);
+                                    ctx.restore();
+                                    break;
+                                case 4: // Fun
+                                    ctx.save();
+                                    ctx.beginPath();
+                                    ctx.arc(x + photoWidth/2, y + photoHeight/2, 
+                                        Math.min(photoWidth, photoHeight)/2 - 20, 0, Math.PI * 2);
+                                    ctx.clip();
+                                    ctx.drawImage(tempImages[j], x + 10, y + 10, photoWidth - 20, photoHeight - 20);
+                                    ctx.restore();
+                                    break;
+                                case 5: // Polaroid
+                                    ctx.save();
+                                    // Draw polaroid frame
+                                    ctx.fillStyle = "#ffffff";
+                                    ctx.fillRect(x + 5, y + 5, photoWidth - 10, photoHeight - 10);
+                                    // Draw image inside frame
+                                    ctx.drawImage(tempImages[j], x + 20, y + 20, photoWidth - 40, photoHeight - 70);
+                                    // Add text area at bottom
+                                    ctx.fillStyle = "#ffffff";
+                                    ctx.fillRect(x + 20, y + photoHeight - 50, photoWidth - 40, 30);
+                                    ctx.restore();
+                                    break;
+                                case 6: // Elegant
+                                    // Draw with hexagon shape
+                                    ctx.save();
+                                    ctx.beginPath();
+                                    const hexSize = Math.min(photoWidth, photoHeight) / 2 - 20;
+                                    const hx = x + photoWidth / 2;
+                                    const hy = y + photoHeight / 2;
+                                    for (let i = 0; i < 6; i++) {
+                                        const angle = (Math.PI / 3) * i;
+                                        const px = hx + hexSize * Math.cos(angle);
+                                        const py = hy + hexSize * Math.sin(angle);
+                                        if (i === 0) ctx.moveTo(px, py);
+                                        else ctx.lineTo(px, py);
+                                    }
+                                    ctx.closePath();
+                                    ctx.clip();
+                                    ctx.drawImage(tempImages[j], x + 10, y + 10, photoWidth - 20, photoHeight - 20);
+                                    ctx.restore();
+                                    break;
+                                case 7: // Dark
+                                    ctx.save();
+                                    // Draw black border
+                                    ctx.fillStyle = "#000000";
+                                    ctx.fillRect(x, y, photoWidth, photoHeight);
+                                    // Draw image inside with rotation
+                                    ctx.translate(x + photoWidth/2, y + photoHeight/2);
+                                    ctx.rotate(Math.PI * 0.02 * (j % 2 === 0 ? 1 : -1));
+                                    ctx.drawImage(tempImages[j], -photoWidth/2 + 25, -photoHeight/2 + 25, 
+                                                photoWidth - 50, photoHeight - 50);
+                                    ctx.restore();
+                                    break;
+                                case 8: // Bubbles
+                                    ctx.save();
+                                    // Draw circular frame
+                                    ctx.beginPath();
+                                    ctx.arc(x + photoWidth/2, y + photoHeight/2, 
+                                        Math.min(photoWidth, photoHeight)/2 - 30, 0, Math.PI * 2);
+                                    ctx.clip();
+                                    ctx.drawImage(tempImages[j], x + 15, y + 15, photoWidth - 30, photoHeight - 30);
+                                    ctx.restore();
+                                    break;
+                                default:
+                                    ctx.drawImage(tempImages[j], x, y, photoWidth, photoHeight);
+                            }
+                        }
+                        
+                        // Add floral decorations for certain templates
+                        if ([1, 2, 5, 6, 8].includes(selectedTemplate)) {
+                            drawFloralDecoration(ctx, stripCanvas.width, stripCanvas.height);
+                        }
+                        
+                        // Add timestamp and logo
+                        addTimestampAndLogo(ctx, stripCanvas.width, stripCanvas.height);
+                        
+                        // Create download link
+                        const link = document.createElement('a');
+                        link.download = 'floral-photo-booth-' + new Date().getTime() + '.png';
+                        link.href = stripCanvas.toDataURL('image/png');
+                        link.click();
+                    }
+                };
+                img.src = photoDataUrls[i];
+            }
         });
-        
-        // Reset photo booth
-        resetBtn.addEventListener('click', resetPhotoBooth);
-        
-        function resetPhotoBooth() {
+
+        // Draw floral decoration on the composite
+        function drawFloralDecoration(ctx, width, height) {
+            // Draw small flowers in corners
+            const flowerPositions = [
+                {x: 20, y: 20},
+                {x: width - 20, y: 20},
+                {x: 20, y: height - 20},
+                {x: width - 20, y: height - 20}
+            ];
+            
+            for (const pos of flowerPositions) {
+                drawSimpleFlower(ctx, pos.x, pos.y, 15, '#e75480');
+            }
+        }
+
+        // Draw a simple flower
+        function drawSimpleFlower(ctx, x, y, size, color) {
+            // Draw petals
+            ctx.fillStyle = color;
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                const angle = (Math.PI * 2 / 5) * i;
+                const px = x + Math.cos(angle) * size;
+                const py = y + Math.sin(angle) * size;
+                ctx.arc(px, py, size / 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Draw center
+            ctx.fillStyle = '#ffb6c1';
+            ctx.beginPath();
+            ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Add timestamp and logo
+        function addTimestampAndLogo(ctx, width, height) {
+            const date = new Date();
+            const dateStr = date.toLocaleDateString();
+            const timeStr = date.toLocaleTimeString();
+            
+            ctx.fillStyle = '#555';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'right';
+            ctx.fillText(`${dateStr} ${timeStr}`, width - 20, height - 10);
+            
+            // Add 'Floral Photo Booth' text as a logo
+            ctx.font = 'bold 20px Pacifico, cursive';
+            ctx.fillStyle = '#e75480';
+            ctx.textAlign = 'left';
+            ctx.fillText('Floral Photo Booth', 20, 30);
+        }
+
+        // Reset everything
+        resetBtn.addEventListener('click', function() {
             photosTaken = 0;
             photoDataUrls = [];
             photoStrip.innerHTML = '';
             photoStripContainer.style.display = 'none';
             downloadBtn.disabled = true;
             captureBtn.disabled = false;
-        }
-        
+        });
+
         // Strip selection
         stripOptions.forEach(option => {
             option.addEventListener('click', function() {
-                stripOptions.forEach(opt => opt.classList.remove('active'));
-                this.classList.add('active');
+                // Only allow changing if no photos taken yet
+                if (photosTaken > 0) {
+                    alert('Please reset before changing the number of photos.');
+                    return;
+                }
                 
-                selectedStrips = parseInt(this.getAttribute('data-strips'));
-                resetPhotoBooth();
+                stripOptions.forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+                selectedStrips = parseInt(this.dataset.strips);
             });
         });
-        
+
         // Template selection
         templateOptions.forEach(option => {
             option.addEventListener('click', function() {
-                templateOptions.forEach(opt => opt.classList.remove('active'));
+                templateOptions.forEach(o => o.classList.remove('active'));
                 this.classList.add('active');
+                selectedTemplate = parseInt(this.dataset.template);
                 
-                selectedTemplate = parseInt(this.getAttribute('data-template'));
-                
-                // Update photo strip template
-                photoStrip.className = 'photo-strip';
-                photoStrip.classList.add(`strip-template-${selectedTemplate}`);
-                
-                // If we have photos, show them in the new template
-                if (photosTaken > 0) {
-                    photoStripContainer.style.display = 'flex';
-                }
+                // Update photostrip class
+                photoStrip.className = `photo-strip strip-template-${selectedTemplate}`;
             });
         });
-    </script>
+
+        // Window load event for better image loading
+        window.addEventListener('load', function() {
+            // Show a message to ensure camera access
+            setTimeout(() => {
+                if (!video.srcObject) {
+                    alert("Please allow camera access to use the photo booth!");
+                }
+            }, 2000);
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Spacebar for capture
+            if (e.code === 'Space' && !captureBtn.disabled) {
+                captureBtn.click();
+                e.preventDefault();
+            }
+            // Enter for download
+            else if (e.code === 'Enter' && !downloadBtn.disabled) {
+                downloadBtn.click();
+                e.preventDefault();
+            }
+            // Escape for reset
+            else if (e.code === 'Escape') {
+                resetBtn.click();
+                e.preventDefault();
+            }
+        });
+</script>
 </body>
 </html>
