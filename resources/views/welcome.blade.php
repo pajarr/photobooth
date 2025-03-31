@@ -1040,7 +1040,7 @@
             ctx.font = 'bold 20px Pacifico, cursive';
             ctx.fillStyle = '#e75480';
             ctx.textAlign = 'left';
-            ctx.fillText('Floral Photo Booth', 20, 30);
+            // ctx.fillText('Floral Photo Booth', 20, 30);
         }
 
         // Reset everything
